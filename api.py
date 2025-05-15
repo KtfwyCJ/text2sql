@@ -33,7 +33,6 @@ def query_handler(data: QueryRequest):
             "final_db": None,
             "final_sql": None
         }
-
         result = graph.invoke(initial_state)
 
         return {

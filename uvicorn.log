@@ -1,0 +1,215 @@
+INFO:     Started server process [94780]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)
+INFO:     134.155.182.33:0 - "OPTIONS /query HTTP/1.1" 200 OK
+🕵️ extract_context
+🧑question: () What is the number of cars with more than 4 cylinders?
+⚠️ Failed to extract context: Expecting value: line 1 column 1 (char 0)
+🧠 select_databases_with_gpt
+⚠️ GPT DB selection failed: Expecting value: line 1 column 1 (char 0)
+🔍 retrieve_schema
+🧠 GPT-selected DBs (cleaned): ['car_1', 'formula_1', 'race_track', 'driving_school', 'train_station', 'manufactory_1', 'products_gen_characteristics', 'railway']
+🧠 generate_sql_multi
+📊 Trying DB: car_1
+schema_chunks ['Table: continents\nColumns: ContId, Continent\nSample rows:\n- 1, america\n- 2, europe', 'Table: countries\nColumns: CountryId, CountryName, Continent\nSample rows:\n- 1, usa, 1\n- 2, germany, 2', 'Table: car_makers\nColumns: Id, Maker, FullName, Country\nSample rows:\n- 1, amc, American Motor Company, 1\n- 2, volkswagen, Volkswagen, 2', 'Table: model_list\nColumns: ModelId, Maker, Model\nSample rows:\n- 1, 1, amc\n- 2, 2, audi', 'Table: car_names\nColumns: MakeId, Model, Make\nSample rows:\n- 1, chevrolet, chevrolet chevelle malibu\n- 2, buick, buick skylark 320', 'Table: cars_data\nColumns: Id, MPG, Cylinders, Edispl, Horsepower, Weight, Accelerate, Year\nSample rows:\n- 1, 18, 8, 307.0, 130, 3504, 12.0, 1970\n- 2, 15, 8, 350.0, 165, 3693, 11.5, 1970', 'Foreign Key: Continent → ContId', 'Foreign Key: Country → CountryId', 'Foreign Key: Maker → Id', 'Foreign Key: Model → Model', 'Foreign Key: Id → MakeId']
+🧑🧑retriever...: 
+🧑🧑enriched_chunks....
+🧑🧑retriever22222...:  <vector_store.RAGRetriever object at 0x15f690790>
+🧑🧑retriever333333...:  <vector_store.RAGRetriever object at 0x15f690790>
+🧑🧑schema_text...: Table: cars_data Columns: Id, MPG, Cylinders, Edispl, Horsepower, Weight, Accelerate, Year Sample rows: - 1, 18, 8, 307.0, 130, 3504, 12.0, 1970 - 2, 15, 8, 350.0, 165, 3693, 11.5, 1970 | Table: car_names Columns: MakeId, Model, Make Sample rows: - 1, chevrolet, chevrolet chevelle malibu - 2, buick, buick skylark 320 | Table: car_makers Columns: Id, Maker, FullName, Country Sample rows: - 1, amc, American Motor Company, 1 - 2, volkswagen, Volkswagen, 2 | Table: model_list Columns: ModelId, Maker, Model Sample rows: - 1, 1, amc - 2, 2, audi
+
+🧠 GPT Output:
+ ```sql
+SELECT COUNT(*) AS NumberOfCars
+FROM cars_data
+WHERE Cylinders > 4;
+```
+
+🧪 Extracted SQL:
+ select count(*) as numberofcars
+from cars_data
+where cylinders > 4
+
+🧾 Raw answer type: <class 'str'> — value: The result is: 195.
+📊 Trying DB: formula_1
+schema_chunks ['Table: circuits\nColumns: circuitId, circuitRef, name, location, country, lat, lng, alt, url\nSample rows:\n- 1, albert_park, Albert Park Grand Prix Circuit, Melbourne, Australia, -37.8497, 144.968, 10, http://en.wikipedia.org/wiki/Melbourne_Grand_Prix_Circuit\n- 2, sepang, Sepang International Circuit, Kuala Lumpur, Malaysia, 2.76083, 101.738, , http://en.wikipedia.org/wiki/Sepang_International_Circuit', 'Table: races\nColumns: raceId, year, round, circuitId, name, date, time, url\nSample rows:\n- 1, 2009, 1, 1, Australian Grand Prix, 2009-03-29, 06:00:00, http://en.wikipedia.org/wiki/2009_Australian_Grand_Prix\n- 2, 2009, 2, 2, Malaysian Grand Prix, 2009-04-05, 09:00:00, http://en.wikipedia.org/wiki/2009_Malaysian_Grand_Prix', 'Table: drivers\nColumns: driverId, driverRef, number, code, forename, surname, dob, nationality, url\nSample rows:\n- 1, hamilton, 44, HAM, Lewis, Hamilton, 07/01/1985, British, http://en.wikipedia.org/wiki/Lewis_Hamilton\n- 2, heidfeld, , HEI, Nick, Heidfeld, 10/05/1977, German, http://en.wikipedia.org/wiki/Nick_Heidfeld', 'Table: status\nColumns: statusId, status\nSample rows:\n- 1, Finished\n- 2, Disqualified', 'Table: seasons\nColumns: year, url\nSample rows:\n- 1950, http://en.wikipedia.org/wiki/1950_Formula_One_season\n- 1951, http://en.wikipedia.org/wiki/1951_Formula_One_season', 'Table: constructors\nColumns: constructorId, constructorRef, name, nationality, url\nSample rows:\n- 1, mclaren, McLaren, British, http://en.wikipedia.org/wiki/McLaren\n- 2, bmw_sauber, BMW Sauber, German, http://en.wikipedia.org/wiki/BMW_Sauber', 'Table: constructorStandings\nColumns: constructorStandingsId, raceId, constructorId, points, position, positionText, wins\nSample rows:\n- 1, 18, 1, 14.0, 1, 1, 1\n- 2, 18, 2, 8.0, 3, 3, 0', 'Table: results\nColumns: resultId, raceId, driverId, constructorId, number, grid, position, positionText, positionOrder, points, laps, time, milliseconds, fastestLap, rank, fastestLapTime, fastestLapSpeed, statusId\nSample rows:\n- 1, 18, 1, 1, 22, 1, 1, 1, 1, 10.0, 58, 34:50.6, 5690616, 39, 2, 01:27.5, 218.3, 1\n- 2, 18, 2, 2, 3, 5, 2, 2, 2, 8.0, 58, 5.478, 5696094, 41, 3, 01:27.7, 217.586, 1', 'Table: driverStandings\nColumns: driverStandingsId, raceId, driverId, points, position, positionText, wins\nSample rows:\n- 1, 18, 1, 10.0, 1, 1, 1\n- 2, 18, 2, 8.0, 2, 2, 0', 'Table: constructorResults\nColumns: constructorResultsId, raceId, constructorId, points, status\nSample rows:\n- 1, 18, 1, 14.0, NULL\n- 2, 18, 2, 8.0, NULL', 'Table: qualifying\nColumns: qualifyId, raceId, driverId, constructorId, number, position, q1, q2, q3\nSample rows:\n- 1, 18, 1, 1, 22, 1, 1:26.572, 1:25.187, 1:26.714\n- 2, 18, 9, 2, 4, 2, 1:26.103, 1:25.315, 1:26.869', 'Table: pitStops\nColumns: raceId, driverId, stop, lap, time, duration, milliseconds', 'Table: lapTimes\nColumns: raceId, driverId, lap, position, time, milliseconds', 'Foreign Key: circuitId → circuitId', 'Foreign Key: raceId → raceId', 'Foreign Key: constructorId → constructorId', 'Foreign Key: driverId → driverId', 'Foreign Key: raceId → raceId', 'Foreign Key: constructorId → constructorId', 'Foreign Key: driverId → driverId', 'Foreign Key: raceId → raceId', 'Foreign Key: raceId → raceId', 'Foreign Key: constructorId → constructorId', 'Foreign Key: driverId → driverId', 'Foreign Key: raceId → raceId', 'Foreign Key: constructorId → constructorId', 'Foreign Key: driverId → driverId', 'Foreign Key: raceId → raceId', 'Foreign Key: driverId → driverId', 'Foreign Key: raceId → raceId']
+🧑🧑retriever...: 
+🧑🧑enriched_chunks....
+🧑🧑retriever22222...:  <vector_store.RAGRetriever object at 0x165dfb5d0>
+🧑🧑retriever333333...:  <vector_store.RAGRetriever object at 0x165dfb5d0>
+🧑🧑schema_text...: Table: constructors Columns: constructorId, constructorRef, name, nationality, url Sample rows: - 1, mclaren, McLaren, British, http://en.wikipedia.org/wiki/McLaren - 2, bmw_sauber, BMW Sauber, German, http://en.wikipedia.org/wiki/BMW_Sauber | Table: qualifying Columns: qualifyId, raceId, driverId, constructorId, number, position, q1, q2, q3 Sample rows: - 1, 18, 1, 1, 22, 1, 1:26.572, 1:25.187, 1:26.714 - 2, 18, 9, 2, 4, 2, 1:26.103, 1:25.315, 1:26.869 | Table: drivers Columns: driverId, driverRef, number, code, forename, surname, dob, nationality, url Sample rows: - 1, hamilton, 44, HAM, Lewis, Hamilton, 07/01/1985, British, http://en.wikipedia.org/wiki/Lewis_Hamilton - 2, heidfeld, , HEI, Nick, Heidfeld, 10/05/1977, German, http://en.wikipedia.org/wiki/Nick_Heidfeld | Table: circuits Columns: circuitId, circuitRef, name, location, country, lat, lng, alt, url Sample rows: - 1, albert_park, Albert Park Grand Prix Circuit, Melbourne, Australia, -37.8497, 144.968, 10, http://en.wikipedia.org/wiki/Melbourne_Grand_Prix_Circuit - 2, sepang, Sepang International Circuit, Kuala Lumpur, Malaysia, 2.76083, 101.738, , http://en.wikipedia.org/wiki/Sepang_International_Circuit
+
+🧠 GPT Output:
+ The provided schema does not include any information about cars or their specifications, such as the number of cylinders. Therefore, it is not possible to generate a SQL query to answer the question about the number of cars with more than 4 cylinders based on the given tables and fields. 
+
+If you have a different question or need assistance with another query, please let me know!
+
+🧪 Extracted SQL:
+ None
+⚠️ No SQL generated
+📊 Trying DB: race_track
+schema_chunks ['Table: race\nColumns: Race_ID, Name, Class, Date, Track_ID\nSample rows:\n- 1, Rolex 24 At Daytona, DP/GT, January 26 January 27, 1\n- 2, Gainsco Grand Prix of Miami, DP/GT, March 29, 2', 'Table: track\nColumns: Track_ID, Name, Location, Seating, Year_Opened\nSample rows:\n- 1, Auto Club Speedway, Fontana, CA, 92000.0, 1997.0\n- 2, Chicagoland Speedway, Joliet, IL, 75000.0, 2001.0', 'Foreign Key: Track_ID → Track_ID']
+🧑🧑retriever...: 
+🧑🧑enriched_chunks....
+🧑🧑retriever22222...:  <vector_store.RAGRetriever object at 0x165f1f850>
+🧑🧑retriever333333...:  <vector_store.RAGRetriever object at 0x165f1f850>
+🧑🧑schema_text...: Table: track Columns: Track_ID, Name, Location, Seating, Year_Opened Sample rows: - 1, Auto Club Speedway, Fontana, CA, 92000.0, 1997.0 - 2, Chicagoland Speedway, Joliet, IL, 75000.0, 2001.0 Description: Contains information on racing tracks. | Table: race Columns: Race_ID, Name, Class, Date, Track_ID Sample rows: - 1, Rolex 24 At Daytona, DP/GT, January 26 January 27, 1 - 2, Gainsco Grand Prix of Miami, DP/GT, March 29, 2 Description: Links drivers and tracks to race results and times.
+
+🧠 GPT Output:
+ Based on the provided schema, there is no information regarding cars or their specifications, such as the number of cylinders. Therefore, I cannot generate a SQL query to answer the question about the number of cars with more than 4 cylinders. If you have a different question or need information related to the existing tables, please let me know!
+
+🧪 Extracted SQL:
+ None
+⚠️ No SQL generated
+📊 Trying DB: driving_school
+schema_chunks ['Table: Addresses\nColumns: address_id, line_1_number_building, city, zip_postcode, state_province_county, country\nSample rows:\n- 1, 3904 Stroman Passage, Port Melyssa, 14445, Georgia, USA\n- 2, 053 Quigley Island, Hagenesfurt, 22194, Kentucky, USA', 'Table: Staff\nColumns: staff_id, staff_address_id, nickname, first_name, middle_name, last_name, date_of_birth, date_joined_staff, date_left_staff\nSample rows:\n- 1, 14, thompson.constantin, Janessa, Amara, Sawayn, 2010-12-08 16:55:14, 2017-04-27 03:21:26, 2018-03-23 22:53:12\n- 2, 3, santos45, Camylle, Icie, Weissnat, 2015-08-01 13:22:43, 2016-06-06 08:54:28, 2018-03-10 15:25:00', 'Table: Vehicles\nColumns: vehicle_id, vehicle_details\nSample rows:\n- 1, Van\n- 2, Truck', 'Table: Customers\nColumns: customer_id, customer_address_id, customer_status_code, date_became_customer, date_of_birth, first_name, last_name, amount_outstanding, email_address, phone_number, cell_mobile_phone_number\nSample rows:\n- 1, 13, Bad Customer, 2016-05-11 17:03:48, 1998-12-15 13:24:40, Carole, Bernhard, 255.0, everette.goyette@example.org, 07278206718, 861-638-9797\n- 2, 10, Bad Customer, 2015-11-16 22:52:14, 1995-07-17 12:13:16, Genevieve, Terry, 7256.0, huel.jana@example.org, +14(5)2351480248, 578-518-4785x612', 'Table: Customer_Payments\nColumns: customer_id, datetime_payment, payment_method_code, amount_payment\nSample rows:\n- 11, 2018-02-05 18:44:46, Direct Debit, 9570.93\n- 2, 2018-02-24 10:07:05, Direct Debit, 8180.26', 'Table: Lessons\nColumns: lesson_id, customer_id, lesson_status_code, staff_id, vehicle_id, lesson_date, lesson_time, price\nSample rows:\n- 1, 6, Cancelled, 8, 3, 2018-02-28 10:55:36, 5, 199.0\n- 2, 8, Cancelled, 14, 3, 2018-03-07 16:12:36, 6, 167.0', 'Foreign Key: staff_address_id → address_id', 'Foreign Key: customer_address_id → address_id', 'Foreign Key: customer_id → customer_id', 'Foreign Key: customer_id → customer_id', 'Foreign Key: staff_id → staff_id', 'Foreign Key: vehicle_id → vehicle_id']
+🧑🧑retriever...: 
+🧑🧑enriched_chunks....
+🧑🧑retriever22222...:  <vector_store.RAGRetriever object at 0x165cc5910>
+🧑🧑retriever333333...:  <vector_store.RAGRetriever object at 0x165cc5910>
+🧑🧑schema_text...: Table: Vehicles Columns: vehicle_id, vehicle_details Sample rows: - 1, Van - 2, Truck | Table: Lessons Columns: lesson_id, customer_id, lesson_status_code, staff_id, vehicle_id, lesson_date, lesson_time, price Sample rows: - 1, 6, Cancelled, 8, 3, 2018-02-28 10:55:36, 5, 199.0 - 2, 8, Cancelled, 14, 3, 2018-03-07 16:12:36, 6, 167.0 | Table: Addresses Columns: address_id, line_1_number_building, city, zip_postcode, state_province_county, country Sample rows: - 1, 3904 Stroman Passage, Port Melyssa, 14445, Georgia, USA - 2, 053 Quigley Island, Hagenesfurt, 22194, Kentucky, USA
+
+🧠 GPT Output:
+ The provided schema does not contain any information about the number of cylinders for vehicles. Therefore, it is not possible to write a SQL query to determine the number of cars with more than 4 cylinders based on the given tables and columns. If you have additional information or a different question, please let me know!
+
+🧪 Extracted SQL:
+ None
+⚠️ No SQL generated
+📊 Trying DB: train_station
+schema_chunks ['Table: station\nColumns: Station_ID, Name, Annual_entry_exit, Annual_interchanges, Total_Passengers, Location, Main_Services, Number_of_Platforms\nSample rows:\n- 1, London Waterloo, 94.046, 9.489, 103.534, London, South Western Main Line West of England Main Line, 19\n- 2, London Victoria, 76.231, 9.157, 85.38, London, Brighton Main Line Chatham Main Line, 19', 'Table: train\nColumns: Train_ID, Name, Time, Service\nSample rows:\n- 1, Ananthapuri Express, 17:15, Daily\n- 2, Guruvayur Express, 22:10, Daily', 'Table: train_station\nColumns: Train_ID, Station_ID\nSample rows:\n- 1, 1\n- 2, 1', 'Foreign Key: Station_ID → Station_ID', 'Foreign Key: Train_ID → Train_ID']
+🧑🧑retriever...: 
+🧑🧑enriched_chunks....
+🧑🧑retriever22222...:  <vector_store.RAGRetriever object at 0x165f3ec50>
+🧑🧑retriever333333...:  <vector_store.RAGRetriever object at 0x165f3ec50>
+🧑🧑schema_text...: Table: station Columns: Station_ID, Name, Annual_entry_exit, Annual_interchanges, Total_Passengers, Location, Main_Services, Number_of_Platforms Sample rows: - 1, London Waterloo, 94.046, 9.489, 103.534, London, South Western Main Line West of England Main Line, 19 - 2, London Victoria, 76.231, 9.157, 85.38, London, Brighton Main Line Chatham Main Line, 19 Description: Stores train station names and locations. | Table: train_station Columns: Train_ID, Station_ID Sample rows: - 1, 1 - 2, 1 | Table: train Columns: Train_ID, Name, Time, Service Sample rows: - 1, Ananthapuri Express, 17:15, Daily - 2, Guruvayur Express, 22:10, Daily Description: Tracks trains and their route assignments.
+
+🧠 GPT Output:
+ The provided schema does not contain any information about cars or cylinders. Therefore, I cannot generate a relevant SQL query based on the given question and schema. If you have a different question or need assistance with another aspect of the schema, please let me know!
+
+🧪 Extracted SQL:
+ None
+⚠️ No SQL generated
+📊 Trying DB: manufactory_1
+schema_chunks ['Table: Manufacturers\nColumns: Code, Name, Headquarter, Founder, Revenue\nSample rows:\n- 1, Sony, Tokyo, Andy, 120.0\n- 2, Creative Labs, Austin, Owen, 100.0', 'Table: Products\nColumns: Code, Name, Price, Manufacturer\nSample rows:\n- 1, Hard drive, 240, 5\n- 2, Memory, 120, 6', 'Foreign Key: Manufacturer → Code']
+🧑🧑retriever...: 
+🧑🧑enriched_chunks....
+🧑🧑retriever22222...:  <vector_store.RAGRetriever object at 0x15f5aa710>
+🧑🧑retriever333333...:  <vector_store.RAGRetriever object at 0x15f5aa710>
+🧑🧑schema_text...: Table: Products Columns: Code, Name, Price, Manufacturer Sample rows: - 1, Hard drive, 240, 5 - 2, Memory, 120, 6 | Table: Manufacturers Columns: Code, Name, Headquarter, Founder, Revenue Sample rows: - 1, Sony, Tokyo, Andy, 120.0 - 2, Creative Labs, Austin, Owen, 100.0
+
+🧠 GPT Output:
+ ```sql
+SELECT COUNT(*) AS NumberOfCars
+FROM Cars
+WHERE Cylinders > 4;
+``` 
+
+(Note: Since the provided schema does not include a "Cars" table or related columns, the query above is a hypothetical example based on the question. Please provide the relevant schema if you need a specific query.)
+
+🧪 Extracted SQL:
+ select count(*) as numberofcars
+from cars
+where cylinders > 4
+
+🧾 Raw answer type: <class 'str'> — value: [Execution Error] no such table: cars
+📊 Trying DB: products_gen_characteristics
+schema_chunks ['Table: Ref_Characteristic_Types\nColumns: characteristic_type_code, characteristic_type_description\nSample rows:\n- Grade, Grade\n- Purity, Purity', 'Table: Ref_Colors\nColumns: color_code, color_description\nSample rows:\n- 9, red\n- 5, green', 'Table: Ref_Product_Categories\nColumns: product_category_code, product_category_description, unit_of_measure\nSample rows:\n- Herbs, Herbs, Handful             \n- Seeds, Seeds, Weight - pound,kilo.', 'Table: Characteristics\nColumns: characteristic_id, characteristic_type_code, characteristic_data_type, characteristic_name, other_characteristic_details\nSample rows:\n- 1, Grade, numquam, slow, None\n- 2, Grade, doloribus, fast, None', 'Table: Products\nColumns: product_id, color_code, product_category_code, product_name, typical_buying_price, typical_selling_price, product_description, other_product_details\nSample rows:\n- 1, 4, Spices, cumin, , 2878.3, et, None\n- 2, 2, Spices, peper, 352447.2874677, 1892070.2803543, rerum, None', 'Table: Product_Characteristics\nColumns: product_id, characteristic_id, product_characteristic_value\nSample rows:\n- 13, 13, low\n- 11, 2, low', 'Foreign Key: characteristic_type_code → characteristic_type_code', 'Foreign Key: color_code → color_code', 'Foreign Key: product_category_code → product_category_code', 'Foreign Key: product_id → product_id', 'Foreign Key: characteristic_id → characteristic_id']
+🧑🧑retriever...: 
+🧑🧑enriched_chunks....
+🧑🧑retriever22222...:  <vector_store.RAGRetriever object at 0x165f1f850>
+🧑🧑retriever333333...:  <vector_store.RAGRetriever object at 0x165f1f850>
+🧑🧑schema_text...: Table: Product_Characteristics Columns: product_id, characteristic_id, product_characteristic_value Sample rows: - 13, 13, low - 11, 2, low | Table: Products Columns: product_id, color_code, product_category_code, product_name, typical_buying_price, typical_selling_price, product_description, other_product_details Sample rows: - 1, 4, Spices, cumin, , 2878.3, et, None - 2, 2, Spices, peper, 352447.2874677, 1892070.2803543, rerum, None | Table: Characteristics Columns: characteristic_id, characteristic_type_code, characteristic_data_type, characteristic_name, other_characteristic_details Sample rows: - 1, Grade, numquam, slow, None - 2, Grade, doloribus, fast, None | Table: Ref_Product_Categories Columns: product_category_code, product_category_description, unit_of_measure Sample rows: - Herbs, Herbs, Handful              - Seeds, Seeds, Weight - pound,kilo.
+
+🧠 GPT Output:
+ Based on the provided schema, there are no tables or columns related to cars or cylinders. Therefore, it is not possible to generate a SQL query to answer the question about the number of cars with more than 4 cylinders using the given schema. 
+
+If you have a different question or need information from the existing tables, please let me know!
+
+🧪 Extracted SQL:
+ None
+⚠️ No SQL generated
+📊 Trying DB: railway
+schema_chunks ["Table: railway\nColumns: Railway_ID, Railway, Builder, Built, Wheels, Location, ObjectNumber\nSample rows:\n- 1, SECR, SECR Ashford, 1901, 4-4-0, York, 1975-7006\n- 2, MR, MR Derby, 1902 Midland Railway 1000 was rebuilt in 1914., 4-4-0, Bo'ness, 1975-7018", 'Table: train\nColumns: Train_ID, Train_Num, Name, From, Arrival, Railway_ID\nSample rows:\n- 1, 51195, Wardha-Ballarshah Pass, Wardha, 08:54, 1\n- 2, 12139, Sewagram Exp, Mumbai CST, 09:08, 1', 'Table: manager\nColumns: Manager_ID, Name, Country, Working_year_starts, Age, Level\nSample rows:\n- 1, Ben Curtis, United States, 2003, 45, 5\n- 2, Todd Hamilton, United States, 2004, 55, 5', 'Table: railway_manage\nColumns: Railway_ID, Manager_ID, From_Year\nSample rows:\n- 8, 1, 2010\n- 9, 2, 2011', 'Foreign Key: Railway_ID → Railway_ID', 'Foreign Key: Railway_ID → Railway_ID', 'Foreign Key: Manager_ID → Manager_ID']
+🧑🧑retriever...: 
+🧑🧑enriched_chunks....
+🧑🧑retriever22222...:  <vector_store.RAGRetriever object at 0x165eee810>
+🧑🧑retriever333333...:  <vector_store.RAGRetriever object at 0x165eee810>
+🧑🧑schema_text...: Table: railway Columns: Railway_ID, Railway, Builder, Built, Wheels, Location, ObjectNumber Sample rows: - 1, SECR, SECR Ashford, 1901, 4-4-0, York, 1975-7006 - 2, MR, MR Derby, 1902 Midland Railway 1000 was rebuilt in 1914., 4-4-0, Bo'ness, 1975-7018 | Table: train Columns: Train_ID, Train_Num, Name, From, Arrival, Railway_ID Sample rows: - 1, 51195, Wardha-Ballarshah Pass, Wardha, 08:54, 1 - 2, 12139, Sewagram Exp, Mumbai CST, 09:08, 1 Description: Contains train IDs and types. | Table: railway_manage Columns: Railway_ID, Manager_ID, From_Year Sample rows: - 8, 1, 2010 - 9, 2, 2011
+
+🧠 GPT Output:
+ ```sql
+SELECT COUNT(*) AS NumberOfCars
+FROM railway
+WHERE Wheels > '4';
+```
+
+🧪 Extracted SQL:
+ select count(*) as numberofcars
+from railway
+where wheels > '4'
+
+🧾 Raw answer type: <class 'str'> — value: The result is: 6.
+🧠 select_best_answer ()
+🧾 All outputs seen by GPT:
+--- car_1 ---
+The result is: 195.
+
+📝 SQL used:
+select count(*) as numberofcars
+from cars_data
+where cylinders > 4
+--- formula_1 ---
+(⚠️ GPT failed to generate a valid SELECT query.)
+
+📝 SQL used:
+SQL generation failed
+--- race_track ---
+(⚠️ GPT failed to generate a valid SELECT query.)
+
+📝 SQL used:
+SQL generation failed
+--- driving_school ---
+(⚠️ GPT failed to generate a valid SELECT query.)
+
+📝 SQL used:
+SQL generation failed
+--- train_station ---
+(⚠️ GPT failed to generate a valid SELECT query.)
+
+📝 SQL used:
+SQL generation failed
+--- manufactory_1 ---
+[Execution Error] no such table: cars
+
+📝 SQL used:
+select count(*) as numberofcars
+from cars
+where cylinders > 4
+--- products_gen_characteristics ---
+(⚠️ GPT failed to generate a valid SELECT query.)
+
+📝 SQL used:
+SQL generation failed
+--- railway ---
+The result is: 6.
+
+📝 SQL used:
+select count(*) as numberofcars
+from railway
+where wheels > '4'
+✅ GPT selected DB (matched): car_1
+🏁 final_output
+
+🟢 Final Answer:
+There are 195 cars with more than 4 cylinders.
+
+📦 Found in DB: car_1
+
+🧾 SQL Used:
+select count(*) as numberofcars
+from cars_data
+where cylinders > 4
+
+🎯 GPT Candidate DBs: ['car_1', 'formula_1', 'race_track', 'driving_school', 'train_station', 'manufactory_1', 'products_gen_characteristics', 'railway']
+INFO:     134.155.182.33:0 - "POST /query HTTP/1.1" 200 OK

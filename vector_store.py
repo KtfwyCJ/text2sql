@@ -13,20 +13,14 @@ class RAGRetriever:
         self.embedder = SentenceTransformer("all-MiniLM-L6-v2")
 
     def add_chunks(self, chunks):
-        documents = []
-        metadatas = []
-        ids = []
-
-        for i, chunk in enumerate(chunks):
-            documents.append(chunk)
-            metadatas.append({"chunk_id": i})
-            ids.append(str(i))
-
+        embeddings = self.embedder.encode(chunks, convert_to_tensor=True)
         self.collection.add(
-            documents=documents,
-            metadatas=metadatas,
-            ids=ids
+            documents=chunks,
+            metadatas=[{"chunk_id": i} for i in range(len(chunks))],
+            ids=[str(i) for i in range(len(chunks))],
+            embeddings=embeddings.cpu().numpy()
         )
+            
 
     def retrieve(self, query, k=3):
         query_embedding = self.embedder.encode(query).tolist()

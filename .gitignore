@@ -1,0 +1,4 @@
+spider/
+schema_embeddings/
+__pycache__/
+results_log.csv

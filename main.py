@@ -18,6 +18,7 @@ init_csv_log()
 SPIDER_PATH = "spider/database"
 EMBEDDING_DIR = "schema_embeddings"
 model = SentenceTransformer("all-MiniLM-L6-v2")
+
 def extract_sql(gpt_output):
     # Try to extract SQL block from markdown-style formatting
     if "```sql" in gpt_output.lower():
@@ -56,15 +57,20 @@ def run_query(db_id, user_question):
         descriptions = load_descriptions()
         schema_chunks = load_schema_chunks(db_id, db_path)
         enriched_chunks = enrich_schema_with_descriptions(schema_chunks, db_id, descriptions)
+        print(f"schema_chunks", schema_chunks)
 
         retriever = RAGRetriever(collection_name=f"schema_chunks_{db_id}")
+        print(f"🧑🧑retriever...: ")
+        print(f"🧑🧑enriched_chunks....")
         retriever.add_chunks(enriched_chunks)
+        print(f"🧑🧑retriever22222...: ", retriever)
         retrieved_chunks = retriever.retrieve(user_question, k=4)
-
+        print(f"🧑🧑retriever333333...: ", retriever)
         schema_text = " | ".join([
             chunk.replace("\n", " ").strip()
             for chunk in retrieved_chunks if "Table:" in chunk
         ])
+        print(f"🧑🧑schema_text...:", schema_text)
 
         rag_prompt = f"""
 You are an expert in writing SQLite-compatible SQL queries.

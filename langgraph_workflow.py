@@ -17,9 +17,6 @@ from langgraph.graph import StateGraph
 
 
 
-
-
-
 EMBEDDING_DIR = "schema_embeddings"
 model = SentenceTransformer("all-MiniLM-L6-v2")
 class QueryState(TypedDict):
@@ -53,6 +50,7 @@ def resolve_fuzzy_list(names: list[str]) -> list[str]:
 def extract_context(state: QueryState) -> QueryState:
     print("🕵️ extract_context")
     question = state["question"]
+    print(f"🧑question: ()" ,question)
 
     prompt = f"""
 From the following user input, extract the name of a database or column if mentioned.
@@ -182,7 +180,6 @@ Pick the best database name key (e.g. "cinema") that gives the most complete and
     try:
         response, _ = run_gpt35(prompt)
         selected_db_raw = response.strip().strip('"').strip("'").lower()
-
         # Fuzzy match GPT's selection to valid db keys in all_outputs
         possible_dbs = list(all_outputs.keys())
         matched = get_close_matches(selected_db_raw, possible_dbs, n=1, cutoff=0.6)
