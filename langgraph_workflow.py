@@ -50,7 +50,6 @@ def resolve_fuzzy_list(names: list[str]) -> list[str]:
 def extract_context(state: QueryState) -> QueryState:
     print("🕵️ extract_context")
     question = state["question"]
-    print(f"🧑question: ()" ,question)
 
     prompt = f"""
 From the following user input, extract the name of a database or column if mentioned.
